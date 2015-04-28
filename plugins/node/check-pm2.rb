@@ -12,13 +12,15 @@ class CheckPM2 < Sensu::Plugin::Check::CLI
         short: "-w count",
         long: "--warn count",
         required: false
+
     option :crit,
         description: 'crit threshold',
         short: "-c count",
         long: "--crit count",
         required: true
+
     option :user,
-        description: "user who's running pm2"
+        description: "user who's running pm2",
         short: "-u user",
         long: "--user user",
         required: true
@@ -31,7 +33,7 @@ class CheckPM2 < Sensu::Plugin::Check::CLI
         @crit=config[:crit].to_i
         @user=config[:user].to_s
 
-        out = %x{sudo su - #{@user} -c "/usr/local/bin/pm2 jlist"}
+        out = %x{sudo su - @user -c "/usr/local/bin/pm2 jlist"}
 
 
 
