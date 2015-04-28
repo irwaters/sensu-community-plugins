@@ -32,15 +32,17 @@ class CheckNodeCluster < Sensu::Plugin::Check::CLI
         output = %x{#{@nodetool} -h #{config[:seed].to_s} status}.split(/$/)
         unknown("nodtool output strange") if output.count < 2
 
+        nodes = 0
         output.each { |line|
             if line.match(/^U.*/||/^D.*/)
+                nodes += 1
                 x = line.match(/^(UN)\s+(\d+\.\d+\.\d+\.\d+)?\s+.*/)
                 # freak if we are down
-                critical("#{x[1]} is in state #{x[2]}") if x[1].match(/D./)
+                critical("#{x[2]} is in state #{x[1]}") if x[1].match(/D./)
             end
         }
 
-        ok("it's all good man")
+        ok("#{nodes} nodes report good status")
     end
 
 
