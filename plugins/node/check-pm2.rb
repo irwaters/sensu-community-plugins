@@ -11,7 +11,7 @@ class CheckPM2 < Sensu::Plugin::Check::CLI
         description: 'warning threshold',
         short: "-w count",
         long: "--warn count",
-        required: false
+        required: true
 
     option :crit,
         description: 'crit threshold',
