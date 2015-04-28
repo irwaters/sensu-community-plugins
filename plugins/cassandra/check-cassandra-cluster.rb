@@ -36,7 +36,7 @@ class CheckNodeCluster < Sensu::Plugin::Check::CLI
             if line.match(/^U.*/||/^D.*/)
                 x = line.match(/^(UN)\s+(\d+\.\d+\.\d+\.\d+)?\s+.*/)
                 # freak if we are down
-                critical("#{x[1]} is in state #{x0}") if x[1].match(/D./)
+                critical("#{x[1]} is in state #{x[2]}") if x[1].match(/D./)
             end
         }
 
