@@ -33,7 +33,7 @@ class CheckPM2 < Sensu::Plugin::Check::CLI
         @crit=config[:crit].to_i
         @user=config[:user].to_s
 
-        out = %x{sudo su - @user -c "/usr/local/bin/pm2 jlist"}
+        out = %x{sudo su - #{@user} -c "/usr/local/bin/pm2 jlist"}
 
 
 
