@@ -1,5 +1,13 @@
 {
-  "mailer-ses": {
+  iler-ses": {
+      "mail_from": "ian@tuul.com",
+          "mail_to": "ian@tuul.com",
+              "aws_access_key": "AKIAI3QSE5AQK6OCYWCA",
+                  "aws_secret_key": "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",
+                      "aws_ses_endpoint": "email.us-east-1.amazonaws.com"
+                        }
+                        }
+                        "mailer-ses": {
     "mail_from": "sensu@example.com",
     "mail_to": "monitor@example.com",
     "aws_access_key": "myawsaccesskey",
@@ -7,3 +15,28 @@
     "aws_ses_endpoint": "email.us-east-1.amazonaws.com"
   }
 }
+
+    ses = AWS::SES::Base.new(                                                                                                  
+      access_key_id: "AKIAI3QSE5AQK6OCYWCA",
+      secret_access_key: "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",
+      server: "email.us-east-1.amazonaws.com",
+      port:443
+
+    )
+
+
+    begin
+      timeout 10 do
+        ses.send_email(
+          to: "ian@tuul.com",
+          source: "ian@tuul.com",
+          subject: "subject",
+          text_body: "wtf again"
+        )
+
+        puts 'mail -- sent alert for ' + "short_name" + ' to ' + "ian@tuul.com"
+      end
+    rescue Timeout::Error
+      puts "shitballs"
+    end
+
