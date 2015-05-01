@@ -26,8 +26,8 @@ class CheckKafka < Sensu::Plugin::Check::CLI
 
     def consumer
         consumer = Poseidon::PartitionConsumer.new("kafka_monitor", 
-                                                   #{config[:host].to_s}, 
-                                                   #{config[:port].to_i}, 
+                                                   config[:host],
+                                                   config[:port].to_i,
                                                    "sensu_check", 
                                                    0, 
                                                    :earliest_offset)
