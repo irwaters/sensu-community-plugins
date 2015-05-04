@@ -12,13 +12,13 @@ class CheckKafka < Sensu::Plugin::Check::CLI
     option :host,
         description: "host to connect to",
         short: "-h",
-        long: "--host",
+        long: "--host host",
         required: true
 
     option :port,
         description: "port to connect to",
         short: "-p",
-        long: "--port",
+        long: "--port port",
         default: 9092,
         required: false
 
