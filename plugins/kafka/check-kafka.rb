@@ -28,7 +28,7 @@ class CheckKafka < Sensu::Plugin::Check::CLI
         consumer = Poseidon::PartitionConsumer.new("kafka_monitor", 
                                                    config[:host].to_s,
                                                    config[:port].to_i,
-                                                   "sensu_check", 
+                                                   "sensu_check2", 
                                                    0, 
                                                    :earliest_offset)
     end
@@ -42,13 +42,19 @@ class CheckKafka < Sensu::Plugin::Check::CLI
         rescue Poseidon::Errors::UnknownTopicOrPartition => e
             publish()
             return(1)
+        rescue => e
+            critical("Could not consume messages #{e.inspect}")
         end
     end
 
     def publish
         messages = []
-        messages << Poseidon::MessageToSend.new("sensu_check", "bar")
-        producer.send_messages(messages)
+        messages << Poseidon::MessageToSend.new("sensu_check2", "barbar")
+        begin
+            producer.send_messages(messages)
+        rescue => e
+            critical("Could not publish messages #{e.inspect}")
+        end
     end
 
 
