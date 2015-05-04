@@ -38,7 +38,7 @@ class CheckKafka < Sensu::Plugin::Check::CLI
 
     def message_count()   
         begin
-        consumer.fetch.count()
+            consumer.fetch.count()
         rescue Poseidon::Errors::UnknownTopicOrPartition => e
             publish()
             return(1)
@@ -54,12 +54,12 @@ class CheckKafka < Sensu::Plugin::Check::CLI
 
 
     def run
-        message_count = message_count
+        message_count = message_count()
         if message_count > 25
             ok "count is #{message_count}"
         else
             prducer.publish
-            ok "count is now #{consumer.message_count}"
+            ok "count is now #{message_count}"
         end
     end
         
