@@ -24,21 +24,23 @@ class CheckKafka < Sensu::Plugin::Check::CLI
 
 
 
-    def initialize
-        self.consumer = Poseidon::PartitionConsumer.new("kafka_monitor", 
+    def consumer(host=nil, port=nil)
+        consumer = Poseidon::PartitionConsumer.new("kafka_monitor", 
                                                    config[:host].to_s,
                                                    config[:port].to_i,
                                                    "sensu_check", 
                                                    0, 
                                                    :earliest_offset)
-        self.producer = Poseidon::Producer.new( ["#{config[:host]}:#{config[:port]}"] , "kafka_monitor", :type => :sync)
+    end
+    def producer(host=nil, port=nil)
+        producer = Poseidon::Producer.new( ["#{config[:host]}:#{config[:port]}"] , "kafka_monitor", :type => :sync)
     end
 
     def message_count()   
         begin
-        self.consumer.fetch.count()
+        consumer.fetch.count()
         rescue Poseidon::Errors::UnknownTopicOrPartition => e
-            self.publish()
+            publish()
             return(1)
         end
     end
@@ -46,19 +48,18 @@ class CheckKafka < Sensu::Plugin::Check::CLI
     def publish
         messages = []
         messages << Poseidon::MessageToSend.new("sensu_check", "bar")
-        self.producer.send_messages(messages)
+        producer.send_messages(messages)
     end
 
 
 
     def run
-        check = CheckKafka.new()
-        message_count = check.message_count
+        message_count = message_count
         if message_count > 25
             ok "count is #{message_count}"
         else
-            check.publish
-            ok "count is now #{check.message_count}"
+            prducer.publish
+            ok "count is now #{consumer.message_count}"
         end
     end
         
