@@ -4,6 +4,7 @@ require 'poseidon'
 require 'sensu-plugin/check/cli'
 
 class CheckKafka < Sensu::Plugin::Check::CLI
+    end
     
     check_name "check kafka"
     
@@ -17,16 +18,23 @@ class CheckKafka < Sensu::Plugin::Check::CLI
         description: "port to connect to",
         short: "-p",
         long: "--port",
-        required: true
+        default: 9092,
+        required: false
+
 
 
     def message_count()   
+        begin
         consumer.fetch.count()
+        rescue Poseidon::Errors::UnknownTopicOrPartition => e
+            self.publish()
+            return(1)
+        end
     end
 
     def consumer
         consumer = Poseidon::PartitionConsumer.new("kafka_monitor", 
-                                                   config[:host],
+                                                   config[:host].to_s,
                                                    config[:port].to_i,
                                                    "sensu_check", 
                                                    0, 
@@ -57,3 +65,4 @@ class CheckKafka < Sensu::Plugin::Check::CLI
     end
         
 end
+
