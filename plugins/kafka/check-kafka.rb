@@ -4,8 +4,9 @@ require 'poseidon'
 require 'sensu-plugin/check/cli'
 
 class CheckKafka < Sensu::Plugin::Check::CLI
-    end
     
+    attr_accessor :producer, :consumer
+
     check_name "check kafka"
     
     option :host,
@@ -23,32 +24,29 @@ class CheckKafka < Sensu::Plugin::Check::CLI
 
 
 
+    def initialize
+        self.consumer = Poseidon::PartitionConsumer.new("kafka_monitor", 
+                                                   config[:host].to_s,
+                                                   config[:port].to_i,
+                                                   "sensu_check", 
+                                                   0, 
+                                                   :earliest_offset)
+        self.producer = Poseidon::Producer.new( ["#{config[:host]}:#{config[:port]}"] , "kafka_monitor", :type => :sync)
+    end
+
     def message_count()   
         begin
-        consumer.fetch.count()
+        self.consumer.fetch.count()
         rescue Poseidon::Errors::UnknownTopicOrPartition => e
             self.publish()
             return(1)
         end
     end
 
-    def consumer
-        consumer = Poseidon::PartitionConsumer.new("kafka_monitor", 
-                                                   config[:host].to_s,
-                                                   config[:port].to_i,
-                                                   "sensu_check", 
-                                                   0, 
-                                                   :earliest_offset)
-    end
-
-    def producer
-        producer = Poseidon::Producer.new( ["#{config[:host]}:#{config[:port]}"] , "kafka_monitor", :type => :sync)
-    end
-
     def publish
         messages = []
         messages << Poseidon::MessageToSend.new("sensu_check", "bar")
-        producer.send_messages(messages)
+        self.producer.send_messages(messages)
     end
 
 
