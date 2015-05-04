@@ -58,7 +58,7 @@ class CheckKafka < Sensu::Plugin::Check::CLI
         if message_count > 25
             ok "count is #{message_count}"
         else
-            prducer.publish
+            producer.publish
             ok "count is now #{message_count}"
         end
     end
