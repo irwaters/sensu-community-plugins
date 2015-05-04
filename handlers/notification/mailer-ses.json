@@ -17,8 +17,8 @@
 }
 
     ses = AWS::SES::Base.new(                                                                                                  
-      access_key_id: "AKIAI3QSE5AQK6OCYWCA",
-      secret_access_key: "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",
+      access_key_id: "GOES HERE",
+      secret_access_key: "GOES HERE",
       server: "email.us-east-1.amazonaws.com",
       port:443
 
