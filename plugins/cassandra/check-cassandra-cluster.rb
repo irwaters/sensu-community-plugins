@@ -30,7 +30,7 @@ class CheckNodeCluster < Sensu::Plugin::Check::CLI
         config[:nodetool] ? @nodetool = config[:nodetool].to_s : @nodetool = "/usr/bin/nodetool"
         unknown("nodetool doesn't exist") if !File.exists?(@nodetool)
         output = %x{#{@nodetool} -h #{config[:seed].to_s} status}.split(/$/)
-        unknown("nodtool output strange") if output.count < 2
+        critical("nodtool output strange") if output.count < 2
 
         nodes = 0
         output.each { |line|
